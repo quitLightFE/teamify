@@ -3,6 +3,7 @@ import Dashboard from "@/components/Dashboard";
 import Head from "next/head";
 
 export default function Home({ data }) {
+  if (!data) return <div>Data yo'q</div>;
   return (
     <>
       <Head>
@@ -17,7 +18,15 @@ export default function Home({ data }) {
 }
 
 export async function getStaticProps() {
-  const res = await getDashboardData();
+  try {
+    const res = await getDashboardData();
 
-  return { props: { data: res.data } };
+    return { props: { data: res.data } };
+  } catch (error) {
+    return {
+      props: {
+        data: null,
+      },
+    };
+  }
 }

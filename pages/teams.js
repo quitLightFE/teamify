@@ -8,7 +8,7 @@ export default function teams({ teamsData }) {
   // useEffect(() => {
   //   getDataTeams().then((res) => setTeamsData(res.data.teamsData));
   // }, []);
-
+  if (!teamsData) return <div>Data yo'q</div>;
   const location = useRouter();
   return (
     <>
@@ -47,6 +47,14 @@ export default function teams({ teamsData }) {
 }
 
 export async function getStaticProps() {
-  const res = await getDataTeams();
-  return { props: { teamsData: res.data.teamsData } };
+  try {
+    const res = await getDataTeams();
+    return { props: { teamsData: res.data.teamsData } };
+  } catch (error) {
+    return {
+      props: {
+        teamsData: null,
+      },
+    };
+  }
 }
