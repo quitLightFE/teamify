@@ -16,7 +16,9 @@ import { useRouter } from "next/router";
 export default function Page({ teamMembers, id }) {
   const router = useRouter();
   const title = typeof id === "string" ? id[0].toUpperCase() + id.slice(1) : "";
-  // if (!teamMembers) return <h5>Team not found</h5>;
+  if (!teamMembers || teamMembers.length === 0) {
+    return <Typography>Team not found</Typography>;
+  }
   return (
     <Box mt={4}>
       <Typography variant="h4" fontWeight={"bold"} mb={2}>
@@ -72,35 +74,18 @@ export default function Page({ teamMembers, id }) {
 }
 
 export async function getServerSideProps(context) {
-  const id = context.query.id;
+  const id = context.params.id;
+
   try {
-    const data = await getMembersData(id);
-    if (!data)
-      return {
-        notFound: true,
-      };
+    const res = await getMembersData(id);
+    if (!res?.data) return { notFound: true };
     return {
       props: {
-        teamMembers: data.data,
+        teamMembers: res.data,
         id,
       },
     };
   } catch (error) {
-    return {
-      notFound: true,
-    };
+    return { notFound: true };
   }
-}
-
-export async function getStaticPaths() {
-  const res = await getDataTeams();
-  const data = res.data;
-  const path = data.map((team) => ({
-    params: { id: team.id.toString() },
-  }));
-
-  return {
-    path,
-    fallback: false,
-  };
 }
