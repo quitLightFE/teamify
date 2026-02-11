@@ -1,4 +1,4 @@
-import { getMembersData } from "@/api";
+import { getDataTeams, getMembersData } from "@/api";
 import {
   Box,
   Button,
@@ -90,4 +90,17 @@ export async function getServerSideProps(context) {
       notFound: true,
     };
   }
+}
+
+export async function getStaticPaths() {
+  const res = await getDataTeams();
+  const data = res.data;
+  const path = data.map((team) => ({
+    params: { id: team.id.toString() },
+  }));
+
+  return {
+    path,
+    fallback: false,
+  };
 }

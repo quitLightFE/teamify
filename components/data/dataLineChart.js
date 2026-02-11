@@ -1,5 +1,3 @@
-import { color } from "@mui/system";
-
 export const dataset = [
   "Oct 2021",
   "Nov 2021",
